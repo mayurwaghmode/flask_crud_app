@@ -1,0 +1,17 @@
+<html>
+<title>Add Employee</title>
+<center><h2>Add Employee</h2></center>
+<body>
+	<center>
+<form action="{{ url_for('addemployee') }}" method="post">
+<p> Name : <input name="name" value="" type="text" 
+            placeholder="eg. Shrikant Markad" required></p>
+<p>Designation : <input name="designation" value="" type="text" 
+            placeholder="eg. Software Engineer" required></p>
+<p>Phone No. :  <input name="phoneno" value="" type="text"
+            placeholder="eg. 9665012921" required></p>
+<p><input type="submit" value="Submit"></p>
+</form>
+</center>
+</body>
+</html>

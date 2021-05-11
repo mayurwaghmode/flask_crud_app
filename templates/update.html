@@ -1,0 +1,21 @@
+<html>
+<title>Update Record</title>
+<center><h2>Update Employee Record for id = {{employeeid}}</h2></center>
+<body>
+	{% block body %}
+	{% for item in data %}
+	<center>
+<form action="/update/{{employeeid}}" method="post">
+<p> Name : <input name="ename" value="{{item[1]}}" type="text" 
+             required></p>
+<p>Designation : <input name="designation" value="{{item[2]}}" type="text" 
+             required></p>
+<p>Phone No. :  <input name="phoneno" value="{{item[3]}}" type="text"
+             required></p>
+<p><input type="submit" value="Submit"></p>
+</form>
+</center>
+	{% endfor %}
+	{% endblock %}
+</body>
+</html>
