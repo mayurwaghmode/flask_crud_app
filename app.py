@@ -1,8 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_mysqldb import MySQL
 
-
-
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -11,7 +9,7 @@ app.config['MYSQL_DB'] = 'flaskdb'
 
 db_obj = MySQL(app)
 
-@app.route('/')#Retrieve
+@app.route('/')#Read
 def index():
     connect = db_obj.connection.cursor()
     connect.execute("SELECT  * FROM employee")
@@ -20,9 +18,7 @@ def index():
 
     return render_template('index.html', data=data )
 
-
-
-@app.route('/addemployee', methods = ['GET','POST'])
+@app.route('/addemployee', methods = ['GET','POST']) #Create
 def addemployee():
     
     if request.method == "POST":
@@ -38,8 +34,6 @@ def addemployee():
      
     else:
      	return render_template('addemployee.html')
-
-
 
 @app.route('/update/<int:employeeid>', methods = ['GET','POST'])#Update
 def update(employeeid):
@@ -71,7 +65,6 @@ def deleteemployee(employeeid):
         db_obj.connection.commit()
 
         return redirect(url_for('index'))
-
 
 if __name__ == "__main__":
     app.run(debug=True)
