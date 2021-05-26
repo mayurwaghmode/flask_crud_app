@@ -7,11 +7,18 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'flaskdb'
 
 db_obj = MySQL(app)
+
 with app.app_context():
+	
     connect = db_obj.connection.cursor()
+    mysql_create_db_query    = """CREATE DATABASE IF NOT EXISTS flaskdb;"""
+    connect.execute(mysql_create_db_query)
+ 
+     
+    mysql_select_db = "use flaskdb"
+    connect.execute(mysql_select_db)
     mySql_Create_Table_Query = """create table if not exists employee(employeeid int not null auto_increment, ename varchar(255) not null, designation varchar(255), phoneno varchar(12), primary key(employeeid));
 """
     connect.execute(mySql_Create_Table_Query)	
@@ -20,11 +27,11 @@ with app.app_context():
 
 
 
-@app.route('/')#Read
+@app.route('/')#Retrieve
 def index():
     connect = db_obj.connection.cursor()
      
-    connect.execute("SELECT  * FROM employee")
+    connect.execute("SELECT  * FROM flaskdb.employee")
     data = connect.fetchall()
     connect.close()
 
@@ -32,7 +39,7 @@ def index():
 
 
 
-@app.route('/addemployee', methods = ['GET','POST'])#Create
+@app.route('/addemployee', methods = ['GET','POST'])
 def addemployee():
     
     if request.method == "POST":
@@ -41,7 +48,7 @@ def addemployee():
         phoneno = request.form['phoneno']
         
         connect = db_obj.connection.cursor()
-        connect.execute("INSERT INTO employee (ename, designation, phoneno) VALUES (%s, %s, %s)", (ename, designation, phoneno))
+        connect.execute("INSERT INTO flaskdb.employee (ename, designation, phoneno) VALUES (%s, %s, %s)", (ename, designation, phoneno))
         db_obj.connection.commit()
 
         return redirect(url_for('index'))
@@ -60,7 +67,7 @@ def update(employeeid):
         phoneno = request.form['phoneno']
         connect = db_obj.connection.cursor()
         connect.execute("""
-               UPDATE employee
+               UPDATE flaskdb.employee
                SET ename=%s, designation=%s, phoneno=%s
                WHERE employeeid=%s
             """, (ename, designation, phoneno, employeeid))
@@ -68,7 +75,7 @@ def update(employeeid):
         return redirect(url_for('index'))
     else:
         connect = db_obj.connection.cursor()
-        connect.execute("SELECT  * FROM employee where employeeid=%s", (employeeid,))
+        connect.execute("SELECT  * FROM flaskdb.employee where employeeid=%s", (employeeid,))
         data = connect.fetchall()
         connect.close()
         return render_template('update.html', employeeid=employeeid, data=data)
@@ -77,7 +84,7 @@ def update(employeeid):
 def deleteemployee(employeeid):
     if employeeid:
         connect = db_obj.connection.cursor()
-        connect.execute("DELETE FROM employee WHERE employeeid=%s",(employeeid,))
+        connect.execute("DELETE FROM flaskdb.employee WHERE employeeid=%s",(employeeid,))
         db_obj.connection.commit()
 
         return redirect(url_for('index'))
